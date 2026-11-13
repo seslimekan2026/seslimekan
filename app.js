@@ -1,4 +1,5 @@
-// --- PROFİL MODAL İŞLEMLERİ ---
+const SUPABASE_URL = 'https://jpjxtraamcbvihtyounwj.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_vJ-6TF8-trk07y9S8sAvNQ_5sNJXjSc';/ --- PROFİL MODAL İŞLEMLERİ ---
 function openProfileModal(name, age, avatar, bio) {
     document.getElementById('modalName').innerText = name;
     document.getElementById('modalAge').innerText = age + ' Yaşında';
