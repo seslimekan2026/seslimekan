@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SesliMekan - Sesli ve Yazılı Sohbet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-900 text-white h-screen flex flex-col overflow-hidden select-none">
+
+    <!-- ÜST BAR: Oda Bilgisi & Kullanıcı Profili -->
+    <header class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700 shrink-0">
+        <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+            <h1 class="font-bold text-lg tracking-wide">SesliMekan <span class="text-xs text-gray-400 font-normal">#GenelOda</span></h1>
+        </div>
+        <button onclick="openProfileModal('Ben', 24, 'https://i.pravatar.cc/150?img=11', 'Yeni katıldım, selamlar!')" class="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded-full text-sm transition">
+            <img src="https://i.pravatar.cc/150?img=11" alt="Profil" class="w-6 h-6 rounded-full object-cover">
+            <span>Profilim</span>
+        </button>
+    </header>
+
+    <!-- ÜST BÖLÜM: 6-7 Kişilik Sesli Sohbet Alanı -->
+    <section class="bg-gray-800/60 p-4 border-b border-gray-700 shrink-0">
+        <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Sesli Sohbet (6/7 Kişi)</span>
+            <button id="joinVoiceBtn" onclick="toggleVoiceJoin()" class="bg-indigo-600 hover:bg-indigo-500 text-xs font-bold px-3 py-1.5 rounded-full transition flex items-center gap-1.5">
+                <i class="fa-solid fa-microphone"></i> <span>Sese Katıl</span>
+            </button>
+        </div>
+
+        <!-- Konuşmacı Slotları Grid -->
+        <div id="voiceGrid" class="grid grid-cols-4 sm:grid-cols-7 gap-3 justify-items-center">
+            <!-- Örnek Aktif Konuşmacılar -->
+            <div onclick="openProfileModal('Ahmet', 26, 'https://i.pravatar.cc/150?img=12', 'Müzik ve sohbet...')" class="flex flex-col items-center cursor-pointer group">
+                <div class="relative">
+                    <img src="https://i.pravatar.cc/150?img=12" class="w-14 h-14 rounded-full object-cover border-2 border-green-500 speaking-ring">
+                    <span class="absolute bottom-0 right-0 bg-green-500 text-gray-900 rounded-full w-5 h-5 flex items-center justify-center text-[10px]"><i class="fa-solid fa-volume-high"></i></span>
+                </div>
+                <span class="text-xs mt-1 text-gray-200 font-medium truncate w-16 text-center">Ahmet</span>
+            </div>
+
+            <div onclick="openProfileModal('Zeynep', 22, 'https://i.pravatar.cc/150?img=5', 'Gece kuşu 🦉')" class="flex flex-col items-center cursor-pointer group">
+                <div class="relative">
+                    <img src="https://i.pravatar.cc/150?img=5" class="w-14 h-14 rounded-full object-cover border-2 border-gray-600">
+                    <span class="absolute bottom-0 right-0 bg-gray-700 text-gray-300 rounded-full w-5 h-5 flex items-center justify-center text-[10px]"><i class="fa-solid fa-microphone-slash"></i></span>
+                </div>
+                <span class="text-xs mt-1 text-gray-300 truncate w-16 text-center">Zeynep</span>
+            </div>
+
+            <!-- Boş Slot Örneği -->
+            <div onclick="toggleVoiceJoin()" class="flex flex-col items-center cursor-pointer opacity-60 hover:opacity-100 transition">
+                <div class="w-14 h-14 rounded-full border-2 border-dashed border-gray-500 flex items-center justify-center bg-gray-800/50">
+                    <i class="fa-solid fa-plus text-gray-400"></i>
+                </div>
+                <span class="text-xs mt-1 text-gray-400">Boş Yer</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ALT BÖLÜM: Akıcı Yazılı Sohbet Alanı -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-900">
+        <!-- Örnek Mesajlar -->
+        <div class="flex items-start space-x-2.5">
+            <img onclick="openProfileModal('Ahmet', 26, 'https://i.pravatar.cc/150?img=12', 'Müzik ve sohbet...')" src="https://i.pravatar.cc/150?img=12" class="w-8 h-8 rounded-full object-cover cursor-pointer mt-1">
+            <div>
+                <div class="flex items-baseline space-x-2">
+                    <span onclick="openProfileModal('Ahmet', 26, 'https://i.pravatar.cc/150?img=12', 'Müzik ve sohbet...')" class="text-xs font-bold text-indigo-400 cursor-pointer hover:underline">Ahmet</span>
+                    <span class="text-[10px] text-gray-500">01:15</span>
+                </div>
+                <p class="bg-gray-800 text-gray-100 text-sm px-3 py-2 rounded-2xl rounded-tl-none mt-0.5 inline-block">Hoş geldiniz arkadaşlar, sesim net geliyor mu?</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- EN ALT: Mesaj Yazma ve Mikrofon Kontrol Barı -->
+    <footer class="bg-gray-800 p-3 border-t border-gray-700 shrink-0">
+        <form id="chatForm" onsubmit="sendMessage(event)" class="flex items-center space-x-2">
+            <button type="button" id="micMuteBtn" onclick="toggleMute()" class="hidden bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            <input type="text" id="messageInput" placeholder="Bir mesaj yaz..." autocomplete="off" class="flex-1 bg-gray-700 text-white text-sm rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition">
+                <i class="fa-solid fa-paper-plane text-sm"></i>
+            </button>
+        </form>
+    </footer>
+
+    <!-- PROFİL GÖRÜNTÜLEME MODALI (Kişiye Tıklayınca Açılır) -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-xs p-5 text-center relative shadow-2xl">
+            <button onclick="closeProfileModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <img id="modalAvatar" src="" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-indigo-500 shadow-md">
+            <h2 id="modalName" class="text-lg font-bold mt-3"></h2>
+            <span id="modalAge" class="inline-block bg-indigo-500/20 text-indigo-300 text-xs px-2.5 py-0.5 rounded-full mt-1"></span>
+            <p id="modalBio" class="text-gray-300 text-sm mt-3 bg-gray-900/60 p-3 rounded-xl"></p>
+            <div class="mt-4 flex gap-2">
+                <button onclick="alert('Özel mesaj özelliği 3. adımda eklenecek!')" class="flex-1 bg-indigo-600 hover:bg-indigo-500 py-2 rounded-xl text-sm font-semibold transition">
+                    <i class="fa-solid fa-envelope mr-1"></i> Özel Mesaj
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
